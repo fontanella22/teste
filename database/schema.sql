@@ -11,20 +11,21 @@ CREATE TABLE animals (
  id TEXT PRIMARY KEY, property_id TEXT NOT NULL REFERENCES properties(id),
  tag TEXT NOT NULL, name TEXT NOT NULL, breed TEXT NOT NULL,
  sex TEXT NOT NULL CHECK(sex IN ('Fêmea','Macho')), birth_date TEXT NOT NULL,
- category TEXT NOT NULL CHECK(category IN ('Bezerro','Bezerra','Novilha','Vaca em lactação','Vaca seca','Touro','Boi')),
+ category TEXT NOT NULL CHECK(category IN ('Bezerro','Bezerra','Novilha','Matriz','Vaca em lactação','Vaca seca','Touro','Boi')),
+ mother_id TEXT REFERENCES animals(id),
  location TEXT NOT NULL CHECK(location IN ('Pasto','Curral','Enfermaria','Maternidade')),
  UNIQUE(property_id,tag)
 );
 CREATE TABLE vaccinations (
  id TEXT PRIMARY KEY, animal_id TEXT NOT NULL REFERENCES animals(id),
- vaccine TEXT NOT NULL, applied_on TEXT NOT NULL, next_due_on TEXT NOT NULL,
+ purpose TEXT, vaccine TEXT NOT NULL, applied_on TEXT NOT NULL, next_due_on TEXT NOT NULL,
  responsible TEXT NOT NULL, CHECK(next_due_on >= applied_on)
 );
 CREATE TABLE treatments (
  id TEXT PRIMARY KEY, animal_id TEXT NOT NULL REFERENCES animals(id),
- type TEXT NOT NULL CHECK(type IN ('Tratamento','Vermifugação')),
- medicine TEXT NOT NULL, first_application TEXT NOT NULL, last_application TEXT NOT NULL,
- milk_withdrawal_days INTEGER NOT NULL CHECK(milk_withdrawal_days >= 0),
+ type TEXT NOT NULL CHECK(type IN ('Tratamento','Vermifugação','Controle de carrapatos','Outro cuidado')),
+ indication TEXT, medicine TEXT NOT NULL, first_application TEXT NOT NULL, last_application TEXT NOT NULL,
+ milk_withdrawal_days INTEGER NOT NULL DEFAULT 0 CHECK(milk_withdrawal_days >= 0),
  meat_withdrawal_days INTEGER NOT NULL CHECK(meat_withdrawal_days >= 0),
  responsible TEXT NOT NULL, dosage_route_notes TEXT,
  CHECK(last_application >= first_application)
@@ -35,8 +36,8 @@ CREATE TABLE milk_records (
 );
 CREATE TABLE reproductive_events (
  id TEXT PRIMARY KEY, animal_id TEXT NOT NULL REFERENCES animals(id),
- type TEXT NOT NULL CHECK(type IN ('Inseminação','Cobertura','Parto','Início da lactação','Secagem')),
- occurred_on TEXT NOT NULL, expected_birth_on TEXT, notes TEXT,
+ type TEXT NOT NULL CHECK(type IN ('Inseminação','Cobertura','Parto','Diagnóstico de gestação','Perda gestacional','Início da lactação','Secagem')),
+ occurred_on TEXT NOT NULL, expected_birth_on TEXT, calf_id TEXT REFERENCES animals(id), notes TEXT,
  CHECK(expected_birth_on IS NULL OR expected_birth_on >= occurred_on)
 );
 CREATE INDEX vaccinations_due ON vaccinations(next_due_on);
