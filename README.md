@@ -19,10 +19,6 @@ Servidor na porta 3000 (configurável com `PORT`). Para validar: `npm test`.
 
 Dados fictícios na primeira abertura; salvos em localStorage por navegador/origem. Atualizações mantêm o armazenamento anterior, inclusive históricos de leite e categorias antigas, sem excluir registros. A interface atual não apresenta o módulo leiteiro. Importação/restauração ainda não implementada.
 
-## Visual e uso no celular
-
-Identidade visual com proposta de logo de canga, verde profundo, tons claros e dourado. Acesse pelo navegador do celular: menu inferior, tabelas em cartões e formulários com campos e botões maiores. Validado em larguras de 360, 390 e 768 pixels. A logo está em `public/logo.png`. Não é aplicativo nativo nem garante funcionamento sem internet; não há sincronização entre celular e computador.
-
 ## Banco de dados
 
 `database/schema.sql` é um esquema SQLite para futura API, separado do protótipo. Relações: proprietário → propriedades → animais → vacinas, tratamentos e reprodução. Inclui parentesco da matriz e do bezerro, finalidade dos cuidados, chaves estrangeiras, brinco único por propriedade e índices. A tabela de leite permanece reservada para uso futuro. Alterações do esquema não são uma migração de uma base já existente.
