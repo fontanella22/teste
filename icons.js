@@ -1,0 +1,4 @@
+export function cattleIcon(calf=false){
+ const horns=calf?'':'<path d="M8 7C5 7 4 4 4 3c3 0 5 1 6 3m6 1c3 0 4-3 4-4-3 0-5 1-6 3"/>';
+ return `<svg class="cattle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${horns}<path d="M7 9C4 7 2 8 2 10c0 2 3 3 5 2m10-3c3-2 5-1 5 1 0 2-3 3-5 2M8 7c2-2 6-2 8 0l1 8c0 4-2 6-5 6s-5-2-5-6Z"/><rect x="7" y="15" width="10" height="6" rx="3"/><path d="M9 11h.01M15 11h.01M10 18h.01M14 18h.01"/></svg>`;
+}
