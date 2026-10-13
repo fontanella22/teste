@@ -1,9 +1,11 @@
 # Sítio Três Irmãos
 
-Protótipo navegável de gestão veterinária e controle de rebanho, em português, adaptado a celular e computador. Node.js 20 ou superior; sem dependências de instalação.
+Protótipo navegável de gestão veterinária e controle de rebanho, em português, adaptado a celular e computador. Node.js 20 ou superior; com autenticação e banco Supabase.
 
 ```sh
 cd /workspace/teste
+npm ci
+npm run build
 npm start
 ```
 
@@ -17,11 +19,11 @@ Servidor na porta 3000 (configurável com `PORT`). Para validar: `npm test`.
 - **Reprodução:** inseminação artificial, cobertura, diagnóstico de gestação, parto e perda gestacional. Ao registrar parto, o brinco opcional permite cadastrar o bezerro, ligado à matriz, com data de nascimento, sexo, raça e localização. Brincos repetidos são rejeitados. As previsões anteriores da mesma matriz são encerradas por parto/perda gestacional; apenas a previsão mais recente de cada matriz aparece como pendência.
 - **Minha propriedade:** proprietário, contato, município, área, observações e exportação JSON.
 
-Dados fictícios na primeira abertura; salvos em localStorage por navegador/origem. Atualizações mantêm o armazenamento anterior, inclusive históricos de leite e categorias antigas, sem excluir registros. A interface atual não apresenta o módulo leiteiro. Importação/restauração ainda não implementada.
+O acesso exige conta Supabase autorizada. Os registros são compartilhados no banco protegido por RLS; não há dados fictícios novos. A cópia local da versão anterior fica preservada até importação explícita pelo administrador. A interface não apresenta o módulo leiteiro. Consulte [CONFIGURAR-SUPABASE.md](database/CONFIGURAR-SUPABASE.md) para ativar o projeto, criar a primeira conta e convidar a equipe.
 
 ## Banco de dados
 
-`database/schema.sql` é um esquema SQLite para futura API, separado do protótipo. Relações: proprietário → propriedades → animais → vacinas, tratamentos e reprodução. Inclui parentesco da matriz e do bezerro, finalidade dos cuidados, chaves estrangeiras, brinco único por propriedade e índices. A tabela de leite permanece reservada para uso futuro. Alterações do esquema não são uma migração de uma base já existente.
+`database/supabase.sql` é o esquema ativo planejado para PostgreSQL/Supabase com membros, documento versionado e RPCs. `database/schema.sql` permanece como modelo SQLite de tabelas normalizadas para uma futura evolução, separado do aplicativo atual. Relações: proprietário → propriedades → animais → vacinas, tratamentos e reprodução. Inclui parentesco da matriz e do bezerro, finalidade dos cuidados, chaves estrangeiras, brinco único por propriedade e índices. A tabela de leite permanece reservada para uso futuro. Alterações do esquema não são uma migração de uma base já existente.
 
 ## Regras e limites
 
@@ -29,4 +31,4 @@ Vacinas atrasadas ou nos próximos 7 dias e partos nos próximos 14 dias aparece
 
 Carência para abate calculada em dias após a última aplicação, inclusive a data final; liberação no dia seguinte. Informar a bula e a prescrição veterinária; prazos em horas não são modelados. Os nomes populares não estabelecem diagnóstico e o aplicativo não recomenda medicamentos, doses ou vacinas.
 
-Sem backend, autenticação, sincronização ou backup automático. Não utilizar como único registro operacional. Antes de produção, implementar API com validação no servidor, autenticação, backup, auditoria, restauração e política de dados.
+Autenticação e armazenamento usam Supabase; políticas RLS bloqueiam visitantes e contas fora da equipe. Permissões: admin, editor e viewer. A primeira configuração do banco e das contas precisa ser feita no painel Supabase. Não há backup automático configurado, auditoria detalhada ou restauração automática; mantenha cópias privadas e configure backups. Testes de RLS executados em PostgreSQL local; validar também no projeto real antes de usar registros operacionais. A chave publicável é pública por projeto: não use secret/service_role no navegador. SDK oficial empacotado em public/supabase.js por npm run build, sem dependência de CDN em execução.
