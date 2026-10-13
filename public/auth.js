@@ -1,9 +1,10 @@
+import {cattleIcon} from './icons.js';
 import {client,loadFarm,clearAccess,message,passwordLink} from './cloud.js';
 const screen=document.querySelector('#auth-screen');
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let hooks,epoch=0,passwordMode=passwordLink,activeUserId=null;
 function lock(){epoch++;clearAccess();hooks?.clear();document.body.classList.add('auth-locked');document.querySelector('#modal')?.close();}
-function shell(body){screen.innerHTML=`<div class="auth-card"><div class="auth-brand">Ⅲ</div><p class="eyebrow">SÍTIO TRÊS IRMÃOS</p>${body}<p class="auth-foot">Acesso exclusivo para a equipe autorizada.<br>Em aparelhos compartilhados, saia ao terminar.</p></div>`;}
+function shell(body){screen.innerHTML=`<div class="auth-card"><div class="auth-brand">${cattleIcon()}</div><p class="eyebrow">SÍTIO TRÊS IRMÃOS</p>${body}<p class="auth-foot">Acesso exclusivo para a equipe autorizada.<br>Em aparelhos compartilhados, saia ao terminar.</p></div>`;}
 function feedback(text){const el=screen.querySelector('[role=status]');if(el)el.textContent=text;}
 function busy(form,value){form.querySelectorAll('button,input').forEach(el=>el.disabled=value);}
 function login(note=''){

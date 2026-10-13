@@ -32,3 +32,15 @@ Vacinas atrasadas ou nos próximos 7 dias e partos nos próximos 14 dias aparece
 Carência para abate calculada em dias após a última aplicação, inclusive a data final; liberação no dia seguinte. Informar a bula e a prescrição veterinária; prazos em horas não são modelados. Os nomes populares não estabelecem diagnóstico e o aplicativo não recomenda medicamentos, doses ou vacinas.
 
 Autenticação e armazenamento usam Supabase; políticas RLS bloqueiam visitantes e contas fora da equipe. Permissões: admin, editor e viewer. A primeira configuração do banco e das contas precisa ser feita no painel Supabase. Não há backup automático configurado, auditoria detalhada ou restauração automática; mantenha cópias privadas e configure backups. Testes de RLS executados em PostgreSQL local; validar também no projeto real antes de usar registros operacionais. A chave publicável é pública por projeto: não use secret/service_role no navegador. SDK oficial empacotado em public/supabase.js por npm run build, sem dependência de CDN em execução.
+
+## Lotes, piquetes e acompanhamento
+
+- Ícones de bovinos para marca, rebanho e bezerros.
+- Rebanho ordenado do mais velho para o mais novo, com idade calculada e filtros por faixa etária, piquete, localização e lote.
+- O cadastro mantém Pasto, Curral, Enfermaria e Maternidade. Piquete é um campo separado para animais no pasto; lote é um agrupamento informado pela equipe. Sugestões editáveis em Minha propriedade: Piquete do morro, Embaixo de casa, Pinheiros e Fundos (vizinho). Animais existentes não recebem piquete/lote automaticamente. Os piquetes ainda referenciados por animais continuam disponíveis para preservar o cadastro.
+- Reprodução permite registrar o resultado de cada inseminação: aguardando, confirmada ou não confirmada, data da avaliação e observações. O painel conta os resultados das inseminações do ano. Ausência de resultado não é tratada como falha.
+- Em Saúde e sanidade, programe vacina por lote com primeira data e intervalo em dias ou meses informado conforme orientação veterinária. Os animais presentes no lote na criação formam a lista da programação; alterações posteriores de lote não mudam essa lista. Para mudar a lista, pause e crie outro plano.
+- “Vacina realizada” fica disponível a partir da data programada. A confirmação permite escolher animais, data efetiva e responsável. Desmarcados continuam pendentes; a próxima data só avança ao concluir o lote. É criado um histórico individual para cada aplicação confirmada.
+- A recorrência mantém o calendário informado (por exemplo, dia 20 a cada 3 meses). Dias inexistentes usam o último dia do mês, recuperando o dia original no seguinte. Atrasos pulam datas já passadas sem inventar aplicações. Os lembretes continuam internos, sem envio de mensagens.
+
+A atualização usa campos opcionais no documento JSON existente do Supabase e não exige executar uma nova migração SQL. As permissões de login e RLS continuam em vigor.
