@@ -36,5 +36,7 @@ export async function startAuth(callbacks){
   if(event==='SIGNED_IN'&&activeUserId&&session?.user?.id!==activeUserId){lock();setTimeout(()=>enter(session),0);}
   // Não realizar chamadas Supabase dentro do callback de autenticação.
  });
+ window.addEventListener('online',()=>{if(document.body.classList.contains('auth-locked')&&!passwordMode)refreshAccess();});
+ if(!navigator.onLine){lock();login('Sem conexão. Conecte para entrar e acessar os registros protegidos.');return;}
  try{const {data,error}=await client.auth.getSession();if(error)throw error;await enter(data.session);}catch(error){lock();login(message(error));}
 }

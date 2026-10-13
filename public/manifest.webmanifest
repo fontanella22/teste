@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "Sítio Três Irmãos",
+  "short_name": "Três Irmãos",
+  "description": "Gestão do rebanho de corte para a equipe autorizada do Sítio Três Irmãos.",
+  "lang": "pt-BR",
+  "start_url": "./index.html#inicio",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f6f2",
+  "theme_color": "#214d3c",
+  "icons": [
+    {"src":"./app-icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"./app-icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},
+    {"src":"./app-icon-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+  ]
+}

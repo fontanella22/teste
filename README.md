@@ -44,3 +44,16 @@ Autenticação e armazenamento usam Supabase; políticas RLS bloqueiam visitante
 - A recorrência mantém o calendário informado (por exemplo, dia 20 a cada 3 meses). Dias inexistentes usam o último dia do mês, recuperando o dia original no seguinte. Atrasos pulam datas já passadas sem inventar aplicações. Os lembretes continuam internos, sem envio de mensagens.
 
 A atualização usa campos opcionais no documento JSON existente do Supabase e não exige executar uma nova migração SQL. As permissões de login e RLS continuam em vigor.
+
+## Instalar como aplicativo (PWA)
+
+- Android: abra o site no Chrome e toque em **Instalar aplicativo**, quando disponível, ou use **⋮ → Instalar aplicativo / Adicionar à tela inicial**.
+- iPhone: abra no Safari e use **Compartilhar → Adicionar à Tela de Início**; ative **Abrir como app** se aparecer.
+- No aplicativo instalado, o ícone abre uma janela própria. O menu **Instalação no celular** explica os passos. A disponibilidade do convite automático depende do navegador; navegação anônima pode bloquear instalação.
+- Esta versão exige internet para autenticação e registros. Não mantém fila de alterações nem armazena respostas da API Supabase no cache offline. A interface pública pode abrir sem conexão depois da primeira visita; isso não autoriza acesso offline aos dados. Uma tela já aberta pode continuar mostrando dados carregados em memória, mas novas consultas/gravações exigem conexão.
+- O service worker armazena apenas uma lista explícita de HTML, CSS, JavaScript e ícones públicos; ignora métodos não GET, chamadas externas, caminhos desconhecidos e URLs com parâmetros. Arquivos de verificação do Google não são alterados. Cópias locais antigas, descritas anteriormente, não são apagadas pela instalação.
+- Quando aparecer **Nova versão · atualizar**, conclua ou cancele o formulário e toque no botão. A atualização espera autorização ou fechamento das janelas antigas; não recarrega automaticamente no meio de um cadastro.
+
+**Antes de publicar qualquer mudança nos arquivos do aplicativo, execute `npm run build`.** O build gera `public/sw.js` com uma versão calculada a partir dos arquivos públicos e do template; assim a atualização do PWA reconhece código e imagens novos. Execute `npm test` após o build. Ícones PNG de 192/512 pixels, maskable e apple-touch-icon de 180 pixels acompanham o projeto; a fonte vetorial está em `public/app-icon.svg`.
+
+Os caminhos relativos do manifesto e do worker suportam a publicação em `/teste/` (gh-pages) ou `/teste/public/` (main com redirecionamento). O escopo se limita à pasta publicada. Requer HTTPS em produção; localhost é usado apenas para validação. Não é uma publicação na Google Play/App Store.
