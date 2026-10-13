@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "test": "node --test",
-    "build": "node scripts/build.js && node scripts/build-pwa.js"
+    "build": "node scripts/build.js && node scripts/build-notifications.js && node scripts/build-pwa.js"
   },
   "engines": {
     "node": ">=20"

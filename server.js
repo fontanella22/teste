@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 const assets = {'/':['index.html','text/html'], '/app.js':['app.js','text/javascript'], '/style.css':['style.css','text/css'], '/domain.js':['domain.js','text/javascript'], '/icons.js':['icons.js','text/javascript'], '/auth.js':['auth.js','text/javascript'], '/cloud.js':['cloud.js','text/javascript'], '/config.js':['config.js','text/javascript'], '/data-model.js':['data-model.js','text/javascript'], '/supabase.js':['supabase.js','text/javascript']};
 for(const name of ['index.html','offline.html'])assets['/'+name]=[name,'text/html'];
-for(const name of ['pwa.js','sw.js'])assets['/'+name]=[name,'text/javascript'];
+for(const name of ['pwa.js','sw.js','notifications.js','daily-summary.js'])assets['/'+name]=[name,'text/javascript'];
 assets['/manifest.webmanifest']=['manifest.webmanifest','application/manifest+json'];
 for(const name of ['app-icon-192.png','app-icon-512.png','app-icon-maskable-512.png','apple-touch-icon.png'])assets['/'+name]=[name,'image/png'];
 const server = http.createServer(async (req,res)=>{

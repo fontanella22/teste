@@ -1,3 +1,4 @@
+import {detachPush} from './notifications.js';
 import {cattleIcon} from './icons.js';
 import {client,loadFarm,clearAccess,message,passwordLink} from './cloud.js';
 const screen=document.querySelector('#auth-screen');
@@ -26,7 +27,7 @@ async function enter(session){
  try{const result=await loadFarm();if(request!==epoch)return;await hooks.ready(result);if(request!==epoch)return;document.body.classList.remove('auth-locked');screen.innerHTML='';}
  catch(error){if(request!==epoch)return;clearAccess();hooks.clear();shell(`<h1>Acesso indisponível</h1><p role="status">${esc(message(error))}</p><p>Entrar com uma conta não libera o acesso automaticamente. O administrador precisa autorizar sua conta.</p><button id="retry-access">Tentar novamente</button><button class="secondary" id="leave-access">Sair</button>`);screen.querySelector('#retry-access').onclick=async()=>{const {data}=await client.auth.getSession();await enter(data.session);};screen.querySelector('#leave-access').onclick=logout;}
 }
-export async function logout(){lock();passwordMode=false;login('Saindo…');const {error}=await client.auth.signOut({scope:'local'});login(error?'Não foi possível encerrar a sessão. Tente sair novamente.':'Você saiu da sua conta.');}
+export async function logout(){await detachPush();lock();passwordMode=false;login('Saindo…');const {error}=await client.auth.signOut({scope:'local'});login(error?'Não foi possível encerrar a sessão. Tente sair novamente.':'Você saiu da sua conta.');}
 export async function refreshAccess(){const {data}=await client.auth.getSession();await enter(data.session);}
 export async function startAuth(callbacks){
  hooks=callbacks;login('Conferindo sessão…');

@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {webcrypto} from 'node:crypto';
+import {readFile} from 'node:fs/promises';
+test('dispatcher exige segredo de cron; config exige conta autorizada; payload não inclui registros',async()=>{
+ const source=(await readFile(new URL('../supabase/functions/daily-digest/index.ts',import.meta.url),'utf8')).replace(/^import .*;$/gm,'');
+ const env={SUPABASE_URL:'https://project.example',SUPABASE_ANON_KEY:'public-test',SUPABASE_SERVICE_ROLE_KEY:'server-test',VAPID_PUBLIC_KEY:'public-vapid-test',VAPID_PRIVATE_KEY:'private-vapid-test',PUSH_JOB_SECRET:'test-job-secret-with-more-than-32-characters'};
+ let handler;const pushes=[];
+ const query={select(){return this;},eq(){return this;},async maybeSingle(){return {data:{role:'viewer'}};},update(){return this;},then(resolve){resolve({error:null});}};
+ const client={auth:{async getUser(token){return {data:{user:token==='valid-test-jwt'?{id:'member'}:null},error:token==='valid-test-jwt'?null:new Error('Invalid')};}},from(){return query;},async rpc(){return {data:[{delivery_id:'device',user_id:'member',endpoint:'https://fcm.googleapis.com/fcm/send/test',p256dh:'test',auth:'test'}],error:null};}};
+ const context={Request,Response,URL,Set,Date,Intl,Uint8Array,TextEncoder,crypto:webcrypto,createClient:()=>client,webpush:{setVapidDetails(){},async sendNotification(subscription,payload){pushes.push({subscription,payload});}},Deno:{env:{get:key=>env[key]},serve:fn=>handler=fn}};
+ vm.runInNewContext(source,context);
+ const request=(action,headers={})=>new Request('https://project.example/functions/v1/daily-digest',{method:'POST',headers:{'Content-Type':'application/json',...headers},body:JSON.stringify({action})});
+ assert.equal((await handler(request('dispatch'))).status,401);assert.equal(pushes.length,0);
+ assert.equal((await handler(request('config'))).status,401);
+ const config=await handler(request('config',{Authorization:'Bearer valid-test-jwt'}));assert.equal(config.status,200);assert.deepEqual(await config.json(),{publicKey:'public-vapid-test'});
+ const dispatch=await handler(request('dispatch',{'x-job-secret':env.PUSH_JOB_SECRET}));assert.equal(dispatch.status,200);assert.equal(pushes.length,1);
+ const payload=JSON.parse(pushes[0].payload);assert.deepEqual(Object.keys(payload).sort(),['day','type']);assert.equal(payload.type,'daily-summary');
+});

@@ -1,6 +1,6 @@
 import {readFile,writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
-const files=['index.html','style.css','app.js','auth.js','cloud.js','config.js','data-model.js','domain.js','icons.js','supabase.js','pwa.js','manifest.webmanifest','offline.html','app-icon-192.png','app-icon-512.png','app-icon-maskable-512.png','apple-touch-icon.png'];
+const files=['index.html','style.css','app.js','auth.js','cloud.js','config.js','data-model.js','domain.js','icons.js','supabase.js','pwa.js','notifications.js','daily-summary.js','manifest.webmanifest','offline.html','app-icon-192.png','app-icon-512.png','app-icon-maskable-512.png','apple-touch-icon.png'];
 const template=await readFile(new URL('./service-worker.template.js',import.meta.url),'utf8');
 const hash=createHash('sha256').update(template);
 for(const file of files)hash.update(file).update(await readFile(new URL('../public/'+file,import.meta.url)));

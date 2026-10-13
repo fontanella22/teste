@@ -57,3 +57,13 @@ A atualização usa campos opcionais no documento JSON existente do Supabase e n
 **Antes de publicar qualquer mudança nos arquivos do aplicativo, execute `npm run build`.** O build gera `public/sw.js` com uma versão calculada a partir dos arquivos públicos e do template; assim a atualização do PWA reconhece código e imagens novos. Execute `npm test` após o build. Ícones PNG de 192/512 pixels, maskable e apple-touch-icon de 180 pixels acompanham o projeto; a fonte vetorial está em `public/app-icon.svg`.
 
 Os caminhos relativos do manifesto e do worker suportam a publicação em `/teste/` (gh-pages) ou `/teste/public/` (main com redirecionamento). O escopo se limita à pasta publicada. Requer HTTPS em produção; localhost é usado apenas para validação. Não é uma publicação na Google Play/App Store.
+
+## Resumo diário e notificações da equipe
+
+A tela **Resumo diário** apresenta pendências e eventos de hoje até 7 dias à frente: vacinas individuais/por lote, partos previstos, tratamentos programados e fim da carência para abate. Datas usam America/Sao_Paulo. Resultados negativos e planos pausados não geram previsão ativa; vacina individual mais recente substitui o lembrete antigo do mesmo produto/animal.
+
+Envio preparado para 7h de Brasília a toda a equipe com aparelhos autorizados. Requer configurar no Supabase `database/notifications.sql`, Edge Function `daily-digest`, segredos VAPID/cron, Vault e `database/notifications-cron.sql`. Consulte [CONFIGURAR-NOTIFICACOES.md](database/CONFIGURAR-NOTIFICACOES.md). Sem essa configuração, o resumo funciona na tela, mas push não é enviado. Não existe seleção de assuntos por usuário; cada aparelho ainda precisa da permissão do sistema.
+
+O aviso na tela bloqueada é genérico; não contém nome de animal, medicamento ou propriedade pessoal. O clique abre o resumo após login e solicita registros atualizados se a tela já estiver aberta, preservando formulários ainda não concluídos. Os endpoints de aparelhos são privados por conta. Somente a função de servidor pode disparar envios; cron é autenticado por segredo privado. Há controle diário de entrega por aparelho e desativação de assinaturas expiradas. Aceite do provedor não garante exibição/leitura no aparelho.
+
+`npm run build` também gera o arquivo único de implantação `supabase/functions/daily-digest/index.ts` a partir de `source.ts`. A chave privada e o segredo do cron não pertencem ao repositório: o administrador pode gerá-los localmente em **Preparar envio** e copiá-los diretamente aos Secrets/Vault no painel.

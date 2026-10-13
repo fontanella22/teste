@@ -1,0 +1,3 @@
+[functions.daily-digest]
+# O dispatcher usa segredo próprio; a ação config valida JWT + associação à equipe dentro da função.
+verify_jwt = false

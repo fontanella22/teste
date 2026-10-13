@@ -23,7 +23,8 @@ test('service worker limita o cache a arquivos públicos e preserva caches de ou
   const otherCache='tres-irmaos-shell-%2Foutra-propriedade%2F-old';
   const oldCache='tres-irmaos-shell-'+encodeURIComponent(new URL(root).pathname)+'-old';
   const cache={addAll:async urls=>{installed=urls;},match:async url=>{cached.push(url);return {public:true};}};
-  const context={URL,Set,Response,fetch:async req=>{calls.push(req);return {network:true};},caches:{open:async()=>cache,keys:async()=>[oldCache,otherCache,'unrelated-cache'],delete:async key=>{deleted.push(key);}},self:{location:{href:root+'sw.js'},clients:{claim:async()=>{}},skipWaiting:()=>{},addEventListener:(name,handler)=>{handlers[name]=handler;}}};
+  const notifications=[];
+  const context={URL,Set,Response,fetch:async req=>{calls.push(req);return {network:true};},caches:{open:async()=>cache,keys:async()=>[oldCache,otherCache,'unrelated-cache'],delete:async key=>{deleted.push(key);}},self:{location:{href:root+'sw.js'},registration:{showNotification:async(title,options)=>notifications.push({title,options})},clients:{claim:async()=>{}},skipWaiting:()=>{},addEventListener:(name,handler)=>{handlers[name]=handler;}}};
   vm.runInNewContext(source,context);
   let waiting;handlers.install({waitUntil:p=>waiting=p});await waiting;
   assert(installed.includes(root+'index.html'));assert(installed.every(url=>url.startsWith(root)));
@@ -36,5 +37,8 @@ test('service worker limita o cache a arquivos públicos e preserva caches de ou
   assert.equal((await request(root+'index.html','GET','navigate')).public,true);
   assert.equal((await request(root+'app.js')).public,true);
   assert.deepEqual(cached,[root+'index.html',root+'app.js']);
+  handlers.push({data:{json:()=>({type:'daily-summary',day:'2026-10-13',body:'Flor está doente',url:'https://evil.example'})},waitUntil:p=>waiting=p});await waiting;
+  assert.equal(notifications.length,1);assert(!JSON.stringify(notifications).includes('Flor'));assert(!JSON.stringify(notifications).includes('evil.example'));
+  assert.equal(notifications[0].options.tag,'sitio-resumo-2026-10-13');assert.equal(notifications[0].options.renotify,false);
  }
 });
